@@ -7,7 +7,8 @@ A zquery plugin for the ripple (aka wave) effect.
 
 
 
-http://codepen.io/lingtalfi/pen/QKpQXo
+- v1.1.0: is currently baking...
+- (v1.0.0: http://codepen.io/lingtalfi/pen/QKpQXo)
 
 
 Dependency
@@ -28,14 +29,22 @@ Example code
 <head>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Ripple effect</title>
-	<style>
-		body {
-			text-align: center;
-		}
+	<title>z-ripple demo</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
+	<script src="https://rawgit.com/lingtalfi/zquery/master/zquery.js"></script>
+
+	<link rel="stylesheet" href="z-ripple.css">
+	<script src="z-ripple.js"></script>
+	
+	
+
+	<style>
+		
+		
 		button {
 			position: relative; /* you need this property: the wave origin depends on it */
+			overflow: hidden; /* remove this property for fun... */
 			border: none;
 			outline: none;
 			cursor: pointer;
@@ -43,52 +52,99 @@ Example code
 			color: white;
 			padding: 18px 60px;
 			border-radius: 2px;
-			font-size: 22px;
-		}
+			font-size: 24px;
 
+		}
 		
-		button:focus{
+		
+		.circle{
+			padding:0;
+			width: 64px;
+			height: 64px;
+			border-radius: 50%;
+		}
+		
+		
+		
+		*:focus{
 			outline: 5px solid red;
 		}
-		
-	
 	</style>
-	<script src="https://rawgit.com/lingtalfi/zquery/master/zquery.js"></script>
-	<script src="https://rawgit.com/lingtalfi/z-ripple/master/z-ripple.js"></script>
-	<link rel="stylesheet" href="https://rawgit.com/lingtalfi/z-ripple/master/z-ripple.css">
-
 </head>
 
 <body>
 
-<h1>z-ripple</h1>
+<h1>z-Ripple</h1>
 <p>
-	z-ripple is a <a href="https://github.com/lingtalfi/zquery">zquery</a> plugin for the ripple effect (wave effect).<br>
-	Click a button below to see what it does.<br>
-	The good news is that it works with buttons elements, so it's accessible friendly.<br>
-	This code is an adaptation of <a href="https://codepen.io/Craigtut/full/dIfzv/" aria-label="codepen demo of the ripple effect">this demo</a>,
-	but I removed the jquery dependency.<br>
-	I used a z-query dependency because I like the one liner call, but it's very easy to get rid off and have a vanilla javascript with no dependencies at all.<br>
-	Performances are ok in the browsers I tested: chrome, safari, firefox 49 (firefox 48 was janky with fast repeated clicks).<br>
+	z-ripple is a <a href="https://github.com/lingtalfi/zquery" target="_blank">zquery</a> plugin
+	that creates a wave effect inside a container element.<br>
+	The z-ripple plugin was created with accessibility and performances in mind.<br>
+	More comments about this specific demo in the source code.
+	
 </p>
+<hr>
+<button class="ripple">
+	<i class="material-icons">favorite</i>
+</button>
 
-<button class="ripple">Bla</button>
-<button data-ripple-color="blue" class="ripple">Bla</button>
-<button data-ripple-color="red" class="ripple">Bla</button>
+<button class="ripple" data-ripple-color="red">
+	Red ripple
+</button>
 
+<button class="ripple circle" data-ripple-color="blue">B</button>
+
+<hr>
+
+
+<button class="dynamicRipple">Dynamic</button>
+<button class="lazyRipple">Lazy</button>
 
 
 <script>
+
 	
-	zz(".ripple").ripple();
-//	zz(".ripple").ripple({events: ['touchstart']});
 	
+
+		document.addEventListener('DOMContentLoaded', function(){			
+			
+			// default call
+			zz('.ripple').ripple();
+			
+			
+			// dynamic mode: the computation of the effect
+			// is re-computed every time.
+			zz('.dynamicRipple').ripple({dynamic: true, color: "black"});
+
+
+			/**
+			 * This snippet demonstrates the default lazy behaviour
+			 * of the ripple plugin.
+			 * The ripple effect is initialized once,
+			 * and subsequent calls to the ripple method
+			 * are ignored (you can think of the ZQuery set to 
+			 * be frozen after the first call).
+			 * 
+			 * Note: you need to reference your ZQuery set object 
+			 * into a variable (zset in the example below) in order
+			 * to do it => you can't re-use the zz function because
+			 * the zz function recreates a NEW set every time.
+			 * 
+			 */
+			var zset = zz('.lazyRipple');
+			setInterval(function(){
+				zset.ripple({color: 'orange'});	
+			}, 1000);
+			
+			
+			
+		});
+	
+
 </script>
+
+
 </body>
 </html>
-
-
-
 
 ```
 
@@ -97,15 +153,23 @@ Example code
 How does it work?
 -------------------------
 
-
-Use the double z (zz)'s zquery method to grab all the elements on which 
+Use the double z (zz)'s zquery method to select all the elements on which 
 you want to apply the ripple effect, then chain that to the ripple method, like so:
 
 ```js
 zz(".ripple").ripple();
 ```
 
-### Ripple Color
+Note: the ripple css class is defined in the ripple.css, and some of its properties are required for the ripple effect
+to work properly.
+
+If you don't want to use the ripple css class, make sure that you copy/paste the css properties of the ripple css class
+in the css class of your choosing.
+
+
+
+
+### special html attributes
 
 To change the wave color, set the data-ripple-color attribute on your ripple element.
 The value of that argument can be anything that the css background-color property accepts.
@@ -115,36 +179,139 @@ The value of that argument can be anything that the css background-color propert
 
 The ripple method accepts a configuration object with the following key/value pairs:
 
-- events: an array containing the events type to which the ripple effect will respond.
-			The default value is click.<br>
-			Example:<br>
+- color: the color of the ink (ripple), defaults to white (or whatever is defined in the ripple.css file)
 ```js
-zz(".ripple").ripple({events: ["touchstart"]});
+zz(".ripple").ripple({color: "red"});
 ```			
+- dynamic: when set to true, recomputes the position of the ink's center on every click
 			
 
 
+Nomenclature
+-----------------
+When the "ripple container" is clicked, the "ink" scales up in concentric circles, 
+contained within the boundaries of the ripple container.
+It's a little bit like when a stone falls into the water and the waves propagate. 
 
 
 
 
 
-Caveats
+Synopsis
+-----------
+
+To create the ripple effect, one has to compute the location of the center of the "ink".
+This computation can be relatively heavy (in the scope of an animation), and therefore
+it should be ideally done once only (to optimize our chances for a smooth animation).
+
+
+Therefore, we have 2 modes for initializing the ripple effect on the candidate elements: one that cares about performances, 
+and one that doesn't.
+
+
+ 
+The 2 modes for initializing the ripple effect are:
+
+- the default mode
+- the dynamic mode
+
+
+### The default mode
+
+```js
+zz(".ripple").ripple();
+```
+
+No options is passed.
+This will do the computation immediately (but in a non blocking way), and once for each element in the set.
+The coordinates of the center of the "ink" are then memorized (for each element) for subsequent calls.
+
+This means that if you call the ripple method multiple times for a given set, the first call only will be processed,
+and the other will be ignored. See an example of this in the source code of the demo code at the top of this page 
+ (the lazy button's comments in the source code).
+
+
+### The dynamic call
+
+```js
+zz(".ripple").ripple({dynamic: true});
+```
+
+The dynamic option is set to true.
+
+This will do the computation every time the "ripple container" is clicked, but in a lazy manner, which means that
+the computation is not performed unless an actual click event is triggered on a ripple element.
+
+This eases the setup, but might not be the best solution performance wise.
+
+
+
+### A characteristic to be aware of
+
+Again, if you call the ripple method multiple times (in your js code), only the first call is taken in account,
+and the subsequent calls are ignored (not to confound with multiple click on a given ripple element).
+
+This was actually implemented to solve a specific problem, which is explained below.
+
+If you are implementing a nav drawer (side nav) component with rippled items, you will be faced
+with the problem that the nav drawer starts first off the screen (and only enters the screen
+if a menu button is activated for instance).
+
+In this case, if you care about performances, you want to instantiate the ripple only once just
+after the drawer opens.
+
+But the drawer might opened/closed multiple times, and therefore your instantiation code
+would naturally be called multiple times.
+
+Thanks to this characteristics of the ripple method, the logic of calling the ripple effect only
+once is already handled for us.
+
+
+
+
+Developer random notes
+-------------------
+
+
+Order of events with mousedown:
+http://www.html5rocks.com/en/mobile/touchandmouse/
+
+
+- 1. touchstart
+- 2. touchmove
+- 3. touchend
+- 4. mouseover
+- 5. mousemove
+- 6. mousedown
+- 7. mouseup
+- 8. click 
+
+
+
+
+Known issues
 ----------
 
-If you the element on which you apply the z-ripple effect is moving inside your document,
-then it shouldn't work right away, but you can tweak the source code to make it work.
-I left some comments in the source code to guide you on how to do that.
-
-That's an extra feature because my guess is that most of the time this plugin will be used on
-non moving elements, and so we can leverage this to save some "layout" calculations (performance wise).
-
+- in chrome53, when triggering the ink from the keyboard on a container containing an icon,
+    the ink center is positioned next to the icon rather than right at the center of it.
+    Probably related to this bug: https://bugs.chromium.org/p/chromium/issues/detail?id=652626&can=2&q=getBoundingClientRect&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
 
 
 
 
 History Log
 ------------------
+    
+- 1.1.0 -- 2016-10-04
+
+    - color can now be set programmatically
+    - ink is now contained within a circular container 
+    - the touch target area is smaller: crisper ripple effect 
+    - dynamic mode allows for morphing/moving elements to have the ripple effect as well 
+    - lazy mode freezes the ZQuery set after the first call by default 
+    - keyboard support: enter/space triggers the ink from the center of the container 
+    - removed events option: now only the ripple is fired on click (more pragmatic)
+    
     
 - 1.0.0 -- 2016-09-24
 

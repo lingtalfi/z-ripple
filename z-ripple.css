@@ -1,15 +1,56 @@
+/*--------------------------------------------------------------------------*
+// This class should be applied to the container
+/*--------------------------------------------------------------------------*/
 .ripple {
-    overflow: hidden;
+    /**
+    * position relative and overflow hidden ensures that the
+    * ink is contained inside the container.
+    */
+    position: relative;
+    /*overflow: hidden;*/
+    text-align: center;
+
+
+    /* 
+    clip the animation even if the ripple element has border radius
+    
+    see Zander's response here:
+    http://stackoverflow.com/questions/10314207/webkit-not-respecting-overflowhidden-with-border-radius/16109635#16109635
+    Tested in chrome53, ff49, safari9, edge13, ie11.
+    
+    */
+    transform: translateZ(0); 
 }
-.ripple-effect {
+
+
+/*--------------------------------------------------------------------------*
+// the ink inside the container
+/*--------------------------------------------------------------------------*/
+.ink {
+    display: inline-block;
     position: absolute;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 12px;
+    height: 12px;
+    
+    
+    
     background: white;
-    transform: translateZ(0);
+    transform: translateZ(0); /* forces the creation of its own layer */
     will-change: transform;
-    animation: ripple-animation 2s;
+    animation: ripple-animation 1s;
+    vertical-align: middle;
+
+
+    
+    /**
+    * have ink contained even inside a container with round border (border-radius: 50% for instance)
+    * have circle container
+    */
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0)
 }
 @keyframes ripple-animation {
     from {

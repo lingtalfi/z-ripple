@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>z-ripple demo</title>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+	<script src="https://rawgit.com/lingtalfi/zquery/master/zquery.js"></script>
+
+	<link rel="stylesheet" href="z-ripple.css">
+	<script src="z-ripple.js"></script>
+	
+	
+
+	<style>
+		
+		
+		button {
+			position: relative; /* you need this property: the wave origin depends on it */
+			overflow: hidden; /* remove this property for fun... */
+			border: none;
+			outline: none;
+			cursor: pointer;
+			background: #89669b;
+			color: white;
+			padding: 18px 60px;
+			border-radius: 2px;
+			font-size: 24px;
+
+		}
+		
+		
+		.circle{
+			padding:0;
+			width: 64px;
+			height: 64px;
+			border-radius: 50%;
+		}
+		
+		
+		
+		*:focus{
+			outline: 5px solid red;
+		}
+	</style>
+</head>
+
+<body>
+
+<h1>z-Ripple</h1>
+<p>
+	z-ripple is a <a href="https://github.com/lingtalfi/zquery" target="_blank">zquery</a> plugin
+	that creates a wave effect inside a container element.<br>
+	The z-ripple plugin was created with accessibility and performances in mind.<br>
+	More comments about this specific demo in the source code.
+	
+</p>
+<hr>
+<button class="ripple">
+	<i class="material-icons">favorite</i>
+</button>
+
+<button class="ripple" data-ripple-color="red">
+	Red ripple
+</button>
+
+<button class="ripple circle" data-ripple-color="blue">B</button>
+
+<hr>
+
+
+<button class="dynamicRipple">Dynamic</button>
+<button class="lazyRipple">Lazy</button>
+
+
+<script>
+
+	
+	
+
+		document.addEventListener('DOMContentLoaded', function(){			
+			
+			// default call
+			zz('.ripple').ripple();
+			
+			
+			// dynamic mode: the computation of the effect
+			// is re-computed every time.
+			zz('.dynamicRipple').ripple({dynamic: true, color: "black"});
+
+
+			/**
+			 * This snippet demonstrates the default lazy behaviour
+			 * of the ripple plugin.
+			 * The ripple effect is initialized once,
+			 * and subsequent calls to the ripple method
+			 * are ignored (you can think of the ZQuery set to 
+			 * be frozen after the first call).
+			 * 
+			 * Note: you need to reference your ZQuery set object 
+			 * into a variable (zset in the example below) in order
+			 * to do it => you can't re-use the zz function because
+			 * the zz function recreates a NEW set every time.
+			 * 
+			 */
+			var zset = zz('.lazyRipple');
+			setInterval(function(){
+				zset.ripple({color: 'orange'});	
+			}, 1000);
+			
+			
+			
+		});
+	
+
+</script>
+
+
+</body>
+</html>
