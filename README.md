@@ -7,8 +7,7 @@ A zquery plugin for the ripple (aka wave) effect.
 
 
 
-- v1.1.0: is currently baking...
-- (v1.0.0: http://codepen.io/lingtalfi/pen/QKpQXo)
+http://codepen.io/lingtalfi/pen/EgbLpK
 
 
 Dependency
@@ -34,8 +33,8 @@ Example code
 
 	<script src="https://rawgit.com/lingtalfi/zquery/master/zquery.js"></script>
 
-	<link rel="stylesheet" href="z-ripple.css">
-	<script src="z-ripple.js"></script>
+	<link rel="stylesheet" href="https://rawgit.com/lingtalfi/z-ripple/master/z-ripple.css">
+	<script src="https://rawgit.com/lingtalfi/z-ripple/master/z-ripple.js"></script>
 	
 	
 
@@ -145,7 +144,6 @@ Example code
 
 </body>
 </html>
-
 ```
 
 
